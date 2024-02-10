@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/go-chi/chi/v5"
+	c "github.com/go-chi/chi/v5"
 )
 
-func SetupRoutes(mux *chi.Mux) {
+func SetupRoutes(mux *c.Mux) {
 	handleClientRoutes(mux)
 }
