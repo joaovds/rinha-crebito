@@ -1,9 +1,18 @@
 package main
 
-import "github.com/joaovds/rinha-crebito/configs"
+import (
+	"log"
+	"net/http"
+
+	"github.com/joaovds/rinha-crebito/configs"
+	"github.com/joaovds/rinha-crebito/internal/infra/chi"
+)
 
 func main() {
 	configs.LoadEnv()
 
-  println("Hello, World!")
+  c := chi.SetupChi()
+
+  log.Printf("Server running on port %s", configs.ENV.Port)
+  log.Panic(http.ListenAndServe(":"+configs.ENV.Port, c.Mux))
 }
