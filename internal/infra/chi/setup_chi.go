@@ -1,8 +1,8 @@
 package chi
 
-
 import (
-  c "github.com/go-chi/chi/v5"
+	c "github.com/go-chi/chi/v5"
+	"github.com/joaovds/rinha-crebito/internal/infra/chi/routes"
 )
 
 type Chi struct {
@@ -16,5 +16,9 @@ func NewChi() *Chi {
 }
 
 func SetupChi() *Chi {
-  return NewChi()
+  chiInstance := NewChi()
+
+  routes.SetupRoutes(chiInstance.Mux)
+
+  return chiInstance
 }
