@@ -17,3 +17,7 @@ func NewAccount(id, limit, balance int) *Account {
 type AccountRepository interface {
   GetByID(id int) (*Account, error)
 }
+
+type AccountUseCase interface {
+  GetByID(id int) (*Account, error)
+}

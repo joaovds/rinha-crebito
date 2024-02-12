@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	c "github.com/go-chi/chi/v5"
+	"github.com/joaovds/rinha-crebito/di"
 )
 
 type clientHandler struct {}
@@ -22,6 +23,16 @@ func (h *clientHandler) GetExtract(w http.ResponseWriter, r *http.Request) {
     return
   }
 
+  accountUC := di.NewAccountUsecases()
+
+  account, err := accountUC.GetAccountByID(clientId)
+  if err != nil {
+    http.Error(w, "Client not found", http.StatusNotFound)
+    return
+  }
+
+  response, _ := json.Marshal(account)
+
   w.WriteHeader(http.StatusOK)
-  w.Write([]byte(fmt.Sprintf("Extract for client %d", clientId)))
+  w.Write(response)
 }
