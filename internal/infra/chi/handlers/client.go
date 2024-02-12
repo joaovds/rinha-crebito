@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	c "github.com/go-chi/chi/v5"
-	"github.com/joaovds/rinha-crebito/di"
+	"github.com/joaovds/rinha-crebito/internal/di"
 )
 
 type clientHandler struct {}
