@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16.2-alpine
+    hostname: db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      PORTGRES_DB: rinha
+    ports:
+      - "5432:5432"
