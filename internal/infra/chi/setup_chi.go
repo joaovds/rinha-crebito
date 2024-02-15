@@ -6,19 +6,19 @@ import (
 )
 
 type Chi struct {
-  Mux *c.Mux
+	Mux *c.Mux
 }
 
 func NewChi() *Chi {
-  return &Chi{
-    Mux: c.NewMux(),
-  }
+	return &Chi{
+		Mux: c.NewMux(),
+	}
 }
 
 func SetupChi() *Chi {
-  chiInstance := NewChi()
+	chiInstance := NewChi()
 
-  routes.SetupRoutes(chiInstance.Mux)
+	routes.SetupRoutes(chiInstance.Mux)
 
-  return chiInstance
+	return chiInstance
 }

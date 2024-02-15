@@ -9,30 +9,30 @@ import (
 	"github.com/joaovds/rinha-crebito/internal/di"
 )
 
-type clientHandler struct {}
+type clientHandler struct{}
 
 func NewClientHandler() *clientHandler {
-  return &clientHandler{}
+	return &clientHandler{}
 }
 
 func (h *clientHandler) GetExtract(w http.ResponseWriter, r *http.Request) {
-  clientIdParam := c.URLParam(r, "id")
-  clientId, err:= strconv.Atoi(clientIdParam)
-  if err != nil {
-    http.Error(w, "Client not found", http.StatusNotFound)
-    return
-  }
+	clientIdParam := c.URLParam(r, "id")
+	clientId, err := strconv.Atoi(clientIdParam)
+	if err != nil {
+		http.Error(w, "Client not found", http.StatusNotFound)
+		return
+	}
 
-  accountUC := di.NewAccountUsecases()
+	accountUC := di.NewAccountUsecases()
 
-  account, err := accountUC.GetAccountByID(clientId)
-  if err != nil {
-    http.Error(w, "Client not found", http.StatusNotFound)
-    return
-  }
+	account, err := accountUC.GetAccountByID(clientId)
+	if err != nil {
+		http.Error(w, "Client not found", http.StatusNotFound)
+		return
+	}
 
-  response, _ := json.Marshal(account)
+	response, _ := json.Marshal(account)
 
-  w.WriteHeader(http.StatusOK)
-  w.Write(response)
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }

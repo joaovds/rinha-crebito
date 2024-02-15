@@ -12,7 +12,7 @@ func handleClientRoutes(mux *chi.Mux) {
 
 	mux.Route("/clientes", func(router chi.Router) {
 		router.Get("/{id}/extrato", func(w http.ResponseWriter, r *http.Request) {
-      clientHandlers.GetExtract(w, r)
+			clientHandlers.GetExtract(w, r)
 		})
 	})
 }

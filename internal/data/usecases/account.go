@@ -6,22 +6,22 @@ import (
 )
 
 type AccountUsecase struct {
-  repo repositories.AccountDBRepository
+	repo repositories.AccountDBRepository
 }
 
 var (
-  NewAccountUsecaseInstance *AccountUsecase
+	NewAccountUsecaseInstance *AccountUsecase
 )
 
 func NewAccountUsecase(repo repositories.AccountDBRepository) *AccountUsecase {
-  if NewAccountUsecaseInstance == nil {
-    NewAccountUsecaseInstance = &AccountUsecase{
-      repo: repo,
-    }
-  }
-  return NewAccountUsecaseInstance
+	if NewAccountUsecaseInstance == nil {
+		NewAccountUsecaseInstance = &AccountUsecase{
+			repo: repo,
+		}
+	}
+	return NewAccountUsecaseInstance
 }
 
 func (a *AccountUsecase) GetAccountByID(id int) (*domain.Account, error) {
-  return a.repo.GetByID(id)
+	return a.repo.GetByID(id)
 }

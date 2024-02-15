@@ -8,7 +8,7 @@ import (
 )
 
 type Env struct {
-	Port        string
+	Port string
 }
 
 var ENV *Env
@@ -24,7 +24,7 @@ func newEnv() *Env {
 	}
 
 	return &Env{
-		Port:        port,
+		Port: port,
 	}
 }
 

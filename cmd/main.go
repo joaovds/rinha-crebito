@@ -11,8 +11,8 @@ import (
 func main() {
 	configs.LoadEnv()
 
-  c := chi.SetupChi()
+	c := chi.SetupChi()
 
-  log.Printf("Server running on port %s", configs.ENV.Port)
-  log.Panic(http.ListenAndServe(":"+configs.ENV.Port, c.Mux))
+	log.Printf("Server running on port %s", configs.ENV.Port)
+	log.Panic(http.ListenAndServe(":"+configs.ENV.Port, c.Mux))
 }
