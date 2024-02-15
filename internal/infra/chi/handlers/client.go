@@ -3,10 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
-	c "github.com/go-chi/chi/v5"
-	"github.com/joaovds/rinha-crebito/internal/di"
+	cc "github.com/joaovds/rinha-crebito/internal/infra/chi/contracts"
+	"github.com/joaovds/rinha-crebito/internal/infra/chi/middlewares"
 )
 
 type clientHandler struct{}
@@ -16,23 +15,27 @@ func NewClientHandler() *clientHandler {
 }
 
 func (h *clientHandler) GetExtract(w http.ResponseWriter, r *http.Request) {
-	clientIdParam := c.URLParam(r, "id")
-	clientId, err := strconv.Atoi(clientIdParam)
-	if err != nil {
-		http.Error(w, "Client not found", http.StatusNotFound)
-		return
-	}
-
-	accountUC := di.NewAccountUsecases()
-
-	account, err := accountUC.GetAccountByID(clientId)
-	if err != nil {
-		http.Error(w, "Client not found", http.StatusNotFound)
+	account, ok := middlewares.AccountFromContext(r.Context())
+	if !ok {
+		http.Error(w, cc.NewErrorResponse(http.StatusNotFound, "account not found").String(), http.StatusNotFound)
 		return
 	}
 
 	response, _ := json.Marshal(account)
 
 	w.WriteHeader(http.StatusOK)
+	w.Write(response)
+}
+
+func (h *clientHandler) CreateNewTransaction(w http.ResponseWriter, r *http.Request) {
+	account, ok := middlewares.AccountFromContext(r.Context())
+	if !ok {
+		http.Error(w, cc.NewErrorResponse(http.StatusNotFound, "account not found").String(), http.StatusNotFound)
+		return
+	}
+
+	response, _ := json.Marshal(account)
+
+	w.WriteHeader(http.StatusCreated)
 	w.Write(response)
 }

@@ -1,5 +1,6 @@
 package queries
 
 const (
-	GetAllClients = "SELECT * FROM clients WHERE id = $1"
+	GetAllAccounts = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
+	GetAccountByID = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
 )

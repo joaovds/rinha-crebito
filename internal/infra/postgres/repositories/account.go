@@ -5,6 +5,7 @@ import (
 
 	"github.com/joaovds/rinha-crebito/internal/domain"
 	"github.com/joaovds/rinha-crebito/internal/infra/postgres"
+	"github.com/joaovds/rinha-crebito/internal/infra/postgres/queries"
 )
 
 type AccountDBRepository struct {
@@ -31,11 +32,14 @@ func (r *AccountDBRepository) GetByID(id int) (*domain.Account, error) {
 	var account domain.Account
 
 	err := r.db.QueryRow(
-		"SELECT id, \"limit\", balance from clients WHERE id = $1",
+		queries.GetAccountByID,
 		id,
 	).Scan(&account.ID, &account.Limit, &account.Balance)
 	if err != nil {
-		println(err.Error())
+		if err == sql.ErrNoRows {
+			return &domain.Account{}, domain.ErrAccountNotFound
+		}
+
 		return &domain.Account{}, err
 	}
 
