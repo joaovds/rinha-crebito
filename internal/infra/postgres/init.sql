@@ -1,6 +1,6 @@
 CREATE DATABASE rinha;
 
-CREATE TABLE IF NOT EXISTS clients (
+CREATE TABLE IF NOT EXISTS accounts (
   id SERIAL PRIMARY KEY,
   "limit" INTEGER NOT NULL,
   balance INTEGER NOT NULL DEFAULT 0
@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS clients (
 
 DO $$
   BEGIN
-    IF NOT EXISTS (SELECT * FROM clients WHERE id BETWEEN 1 AND 5) THEN
-      INSERT INTO clients ("limit") 
+    IF NOT EXISTS (SELECT * FROM accounts WHERE id BETWEEN 1 AND 5) THEN
+      INSERT INTO accounts ("limit") 
       VALUES 
       (1000 * 100),
       (800 * 100),
