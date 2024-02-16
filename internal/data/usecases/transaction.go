@@ -23,7 +23,7 @@ func NewTransactionUsecase(repo domain.TransactionRepository) *TransactionUsecas
 }
 
 func (a *TransactionUsecase) Create(transaction *domain.Transaction) error {
-  a.repo.Create(transaction)
+	a.repo.Create(transaction)
 
-  return nil
+	return nil
 }

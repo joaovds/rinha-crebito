@@ -5,7 +5,7 @@ import (
 )
 
 type AccountUsecase struct {
-  repo domain.AccountRepository
+	repo domain.AccountRepository
 }
 
 var (
