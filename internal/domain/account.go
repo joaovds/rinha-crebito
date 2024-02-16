@@ -1,6 +1,8 @@
 package domain
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrAccountNotFound = errors.New("account not found")
@@ -22,8 +24,10 @@ func NewAccount(id, limit, balance int) *Account {
 
 type AccountRepository interface {
 	GetByID(id int) (*Account, error)
+	GetLastTransactions(accountId int) ([]*LastTransaction, error)
 }
 
 type AccountUseCase interface {
 	GetByID(id int) (*Account, error)
+	GetExtract(id int) (*Extract, error)
 }
