@@ -27,5 +27,5 @@ type TransactionRepository interface {
 }
 
 type TransactionUseCase interface {
-	Create(transaction *Transaction) (*Account, error)
+	Create(transaction *Transaction) error
 }

@@ -16,7 +16,7 @@ func NewAccountUsecases() *usecases.AccountUsecase {
 	Once.Do(func() {
 		repo := repositories.NewAccountDBRepository()
 
-		accountUsecase = usecases.NewAccountUsecase(*repo)
+		accountUsecase = usecases.NewAccountUsecase(repo)
 	})
 
 	return accountUsecase
