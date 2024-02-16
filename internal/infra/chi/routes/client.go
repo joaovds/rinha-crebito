@@ -12,12 +12,12 @@ func handleClientRoutes(mux *chi.Mux) {
 	clientHandlers := handlers.NewClientHandler()
 
 	mux.Route("/clientes", func(router chi.Router) {
-		router.With(middlewares.CheckIDParam).Get("/{id}/transacoes", func(w http.ResponseWriter, r *http.Request) {
-			clientHandlers.GetExtract(w, r)
+		router.With(middlewares.CheckIDParam).Post("/{id}/transacoes", func(w http.ResponseWriter, r *http.Request) {
+			clientHandlers.CreateNewTransaction(w, r)
 		})
 
 		router.With(middlewares.CheckIDParam).Get("/{id}/extrato", func(w http.ResponseWriter, r *http.Request) {
-			clientHandlers.CreateNewTransaction(w, r)
+			clientHandlers.GetExtract(w, r)
 		})
 	})
 }
