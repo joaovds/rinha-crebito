@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
+  "fmt"
+	"log"
 	"net/http"
 
+	"github.com/joaovds/rinha-crebito/internal/di"
 	"github.com/joaovds/rinha-crebito/internal/domain"
 	cc "github.com/joaovds/rinha-crebito/internal/infra/chi/contracts"
 	"github.com/joaovds/rinha-crebito/internal/infra/chi/middlewares"
@@ -24,7 +26,15 @@ func (h *clientHandler) GetExtract(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, _ := json.Marshal(account)
+	accountUC := di.NewAccountUsecases()
+	extract, err := accountUC.GetExtract(account.ID)
+	if err != nil {
+		http.Error(w, cc.NewErrorResponse(http.StatusInternalServerError, "internal server error").String(), http.StatusInternalServerError)
+		log.Println(err.Error())
+		return
+	}
+
+	response, _ := json.Marshal(extract)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)

@@ -46,6 +46,28 @@ func (r *AccountDBRepository) GetByID(id int) (*domain.Account, error) {
 	return &account, nil
 }
 
+func (r *AccountDBRepository) GetLastTransactions(accountId int) ([]*domain.LastTransaction, error) {
+	transactions := make([]*domain.LastTransaction, 0)
+
+	rows, err := r.db.Query(queries.GetLastTransactions, accountId)
+	if err != nil {
+		return transactions, err
+	}
+
+	for rows.Next() {
+		var transaction domain.LastTransaction
+
+		err = rows.Scan(&transaction.Value, &transaction.TypeTransaction, &transaction.Description, &transaction.RealizedAt)
+		if err != nil {
+			return transactions, err
+		}
+
+		transactions = append(transactions, &transaction)
+	}
+
+	return transactions, nil
+}
+
 func (r *AccountDBRepository) Update(account *domain.Account) error {
 	_, err := r.db.Exec(
 		queries.UpdateAccount,
