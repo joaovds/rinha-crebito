@@ -29,7 +29,7 @@ func NewTransactionDBRepository() *TransactionDBRepository {
 	return NewTransactionDBRepositoryInstance
 }
 
-func (r *TransactionDBRepository) CreateTransaction(transaction domain.Transaction) error {
+func (r *TransactionDBRepository) Create(transaction *domain.Transaction) error {
 	_, err := r.db.Exec(
 		queries.InsertTransaction,
 		transaction.Value,
@@ -37,6 +37,19 @@ func (r *TransactionDBRepository) CreateTransaction(transaction domain.Transacti
 		transaction.Description,
 		time.Now(),
 		transaction.AccountID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *TransactionDBRepository) UpdateAccountBalance(account *domain.Account) error {
+	_, err := t.db.Exec(
+		queries.UpdateAccountBalance,
+		account.Balance,
+		account.ID,
 	)
 	if err != nil {
 		return err

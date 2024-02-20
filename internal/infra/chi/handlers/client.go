@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-  "fmt"
 	"log"
 	"net/http"
 
@@ -10,7 +9,6 @@ import (
 	"github.com/joaovds/rinha-crebito/internal/domain"
 	cc "github.com/joaovds/rinha-crebito/internal/infra/chi/contracts"
 	"github.com/joaovds/rinha-crebito/internal/infra/chi/middlewares"
-	"github.com/joaovds/rinha-crebito/internal/infra/postgres/repositories"
 )
 
 type clientHandler struct{}
@@ -40,18 +38,6 @@ func (h *clientHandler) GetExtract(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
-type CreateNewTransactionResponse struct {
-	Limit   int `json:"limite"`
-	Balance int `json:"saldo"`
-}
-
-func NewCreateNewTransactionResponse(limit, balance int) *CreateNewTransactionResponse {
-	return &CreateNewTransactionResponse{
-		Limit:   limit,
-		Balance: balance,
-	}
-}
-
 func (h *clientHandler) CreateNewTransaction(w http.ResponseWriter, r *http.Request) {
 	account, ok := middlewares.AccountFromContext(r.Context())
 	if !ok {
@@ -59,38 +45,28 @@ func (h *clientHandler) CreateNewTransaction(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var transaction domain.Transaction
+  var requestBody CreateNewTransactionRequest
 
-	if err := json.NewDecoder(r.Body).Decode(&transaction); err != nil {
-		http.Error(w, fmt.Sprintf("failed to decode request body: %v", err), http.StatusBadRequest)
-		return
-	}
-	transaction.AccountID = account.ID
+  if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+    http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "failed to decode request body").String(), http.StatusUnprocessableEntity)
+    return
+  }
 
-	if transaction.TypeTransaction == "d" {
-		if account.Balance-transaction.Value < -account.Limit {
-			http.Error(w, "transaction would exceed account limit", http.StatusUnprocessableEntity)
-			return
-		}
-		account.Balance = account.Balance - transaction.Value
-	} else if transaction.TypeTransaction == "c" {
-		account.Limit = account.Limit - transaction.Value
-	}
-
-	err := repositories.NewTransactionDBRepository().CreateTransaction(transaction)
+  transactionUC := di.NewTransactionUsecases()
+	err := transactionUC.Create(requestBody.ToDomain(account.ID), account)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to create transaction: %v", err), http.StatusBadRequest)
+    if err == domain.ErrIncosistentBalance {
+      http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "transaction would exceed account limit").String(), http.StatusUnprocessableEntity)
+      return
+    }
+
+    http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "internal server error").String(), http.StatusUnprocessableEntity)
+		log.Println(err.Error())
 		return
 	}
 
-	err = repositories.NewAccountDBRepository().Update(account)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to update account: %v", err), http.StatusBadRequest)
-		return
-	}
+  response, _ := json.Marshal(NewCreateNewTransactionResponse(account.Limit, account.Balance))
 
-	accountNew := NewCreateNewTransactionResponse(account.Limit, account.Balance)
-	response, _ := json.Marshal(accountNew)
-	w.WriteHeader(http.StatusCreated)
-	w.Write(response)
+  w.WriteHeader(http.StatusOK)
+  w.Write(response)
 }

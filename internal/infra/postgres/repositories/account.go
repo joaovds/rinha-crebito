@@ -67,17 +67,3 @@ func (r *AccountDBRepository) GetLastTransactions(accountId int) ([]*domain.Last
 
 	return transactions, nil
 }
-
-func (r *AccountDBRepository) Update(account *domain.Account) error {
-	_, err := r.db.Exec(
-		queries.UpdateAccount,
-		account.Limit,
-		account.Balance,
-		account.ID,
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}

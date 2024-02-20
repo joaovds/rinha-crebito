@@ -22,8 +22,37 @@ func NewTransactionUsecase(repo domain.TransactionRepository) *TransactionUsecas
 	return NewTransactionUsecaseInstance
 }
 
-func (a *TransactionUsecase) Create(transaction *domain.Transaction) error {
-	a.repo.Create(transaction)
+func (a *TransactionUsecase) Create(transaction *domain.Transaction, account *domain.Account) error {
+  err := transaction.Validate()
+  if err != nil {
+    return err
+  }
+
+  var newBalance int
+
+  if transaction.TypeTransaction == "d" {
+    newBalance = account.Balance - transaction.Value
+
+    if newBalance < -account.Limit {
+      return domain.ErrIncosistentBalance
+    }
+  }
+
+  if transaction.TypeTransaction == "c" {
+    newBalance = account.Balance + transaction.Value
+  }
+
+  account.Balance = newBalance
+
+  err = a.repo.Create(transaction)
+  if err != nil {
+    return err
+  }
+
+  err = a.repo.UpdateAccountBalance(account)
+  if err != nil {
+    return err
+  }
 
 	return nil
 }
