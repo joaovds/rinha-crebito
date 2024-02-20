@@ -10,3 +10,5 @@ services:
       PORTGRES_DB: rinha
     ports:
       - "5432:5432"
+    volumes:
+      - ./internal/infra/postgres:/docker-entrypoint-initdb.d
