@@ -7,6 +7,8 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
-      PORTGRES_DB: rinha
+      POSTGRES_DB: rinha
     ports:
       - "5432:5432"
+    volumes:
+      - ./internal/infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql

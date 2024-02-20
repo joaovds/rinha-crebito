@@ -1,12 +1,10 @@
-CREATE DATABASE rinha;
-
-CREATE TABLE IF NOT EXISTS accounts (
+CREATE TABLE accounts (
   id SERIAL PRIMARY KEY,
   "limit" INTEGER NOT NULL,
   balance INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS transactions (
+CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
   value INTEGER NOT NULL,
   type_transaction char(1) NOT NULL CHECK (type_transaction IN ('c', 'd')),
