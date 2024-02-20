@@ -7,11 +7,11 @@ type CreateNewTransactionRequest struct {
 }
 
 func NewCreateNewTransactionRequest(value int, typeTransaction, description string) *CreateNewTransactionRequest {
-  return &CreateNewTransactionRequest{
-    Value:           value,
-    TypeTransaction: typeTransaction,
-    Description:     description,
-  }
+	return &CreateNewTransactionRequest{
+		Value:           value,
+		TypeTransaction: typeTransaction,
+		Description:     description,
+	}
 }
 
 type CreateNewTransactionResponse struct {

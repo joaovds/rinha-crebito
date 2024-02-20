@@ -45,28 +45,28 @@ func (h *clientHandler) CreateNewTransaction(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-  var requestBody CreateNewTransactionRequest
+	var requestBody CreateNewTransactionRequest
 
-  if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
-    http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "failed to decode request body").String(), http.StatusUnprocessableEntity)
-    return
-  }
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "failed to decode request body").String(), http.StatusUnprocessableEntity)
+		return
+	}
 
-  transactionUC := di.NewTransactionUsecases()
+	transactionUC := di.NewTransactionUsecases()
 	err := transactionUC.Create(requestBody.ToDomain(account.ID), account)
 	if err != nil {
-    if err == domain.ErrIncosistentBalance {
-      http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "transaction would exceed account limit").String(), http.StatusUnprocessableEntity)
-      return
-    }
+		if err == domain.ErrIncosistentBalance {
+			http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "transaction would exceed account limit").String(), http.StatusUnprocessableEntity)
+			return
+		}
 
-    http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "internal server error").String(), http.StatusUnprocessableEntity)
+		http.Error(w, cc.NewErrorResponse(http.StatusUnprocessableEntity, "internal server error").String(), http.StatusUnprocessableEntity)
 		log.Println(err.Error())
 		return
 	}
 
-  response, _ := json.Marshal(NewCreateNewTransactionResponse(account.Limit, account.Balance))
+	response, _ := json.Marshal(NewCreateNewTransactionResponse(account.Limit, account.Balance))
 
-  w.WriteHeader(http.StatusOK)
-  w.Write(response)
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }

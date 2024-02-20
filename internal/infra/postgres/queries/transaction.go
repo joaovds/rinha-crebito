@@ -17,5 +17,5 @@ const (
     realized_at DESC
   LIMIT 10
   `
-	InsertTransaction   = "INSERT INTO transactions (value, type_transaction, description, realized_at, account_id) VALUES ($1, $2, $3, $4, $5)"
+	InsertTransaction = "INSERT INTO transactions (value, type_transaction, description, realized_at, account_id) VALUES ($1, $2, $3, $4, $5)"
 )

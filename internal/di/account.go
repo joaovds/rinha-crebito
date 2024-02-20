@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	accountUsecase *usecases.AccountUsecase
-  transactionUsecase *usecases.TransactionUsecase
-	OnceAUC           sync.Once
-	OnceTUC           sync.Once
+	accountUsecase     *usecases.AccountUsecase
+	transactionUsecase *usecases.TransactionUsecase
+	OnceAUC            sync.Once
+	OnceTUC            sync.Once
 )
 
 func NewAccountUsecases() *usecases.AccountUsecase {
