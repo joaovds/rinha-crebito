@@ -45,3 +45,17 @@ func (r *AccountDBRepository) GetByID(id int) (*domain.Account, error) {
 
 	return &account, nil
 }
+
+func (r *AccountDBRepository) Update(account *domain.Account) error {
+	_, err := r.db.Exec(
+		queries.UpdateAccount,
+		account.Limit,
+		account.Balance,
+		account.ID,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -4,9 +4,9 @@ import "time"
 
 type Transaction struct {
 	ID              int
-	Value           int
-	TypeTransaction string
-	Description     string
+	Value           int    `json:"valor"`
+	TypeTransaction string `json:"tipo"`
+	Description     string `json:"descricao"`
 	AccountID       int
 	RealizedAt      time.Time
 }
