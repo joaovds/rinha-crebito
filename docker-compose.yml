@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  postgres:
+  db:
     image: postgres:16.2-alpine
     hostname: db
     environment:
@@ -12,3 +12,35 @@ services:
       - "5432:5432"
     volumes:
       - ./internal/infra/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  app1:
+    image: rinha-app:latest
+    hostname: app1
+    environment:
+      - DB_HOST=db
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.6"
+          memory: "200MB"
+
+  app2:
+    image: rinha-app:latest
+    hostname: app2
+    environment:
+      - DB_HOST=db
+    ports:
+      - "8082:8080"
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: "0.6"
+          memory: "200MB"
+
+
