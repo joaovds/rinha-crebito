@@ -4,10 +4,18 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/joaovds/rinha-crebito/internal/database"
 	"github.com/joaovds/rinha-crebito/internal/handlers"
 )
 
+func init() {
+}
+
 func main() {
+	db, _ := database.SetupDatabase()
+	println(db)
+	defer db.Close()
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/clientes/{id}/transacoes", handlers.CreateTransaction)

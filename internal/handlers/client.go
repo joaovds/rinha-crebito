@@ -1,6 +1,8 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+)
 
 func GetClientExtract(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
