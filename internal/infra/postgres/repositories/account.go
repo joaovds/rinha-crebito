@@ -1,15 +1,17 @@
 package repositories
 
 import (
-	"database/sql"
+	"context"
 
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joaovds/rinha-crebito/internal/domain"
 	"github.com/joaovds/rinha-crebito/internal/infra/postgres"
 	"github.com/joaovds/rinha-crebito/internal/infra/postgres/queries"
 )
 
 type AccountDBRepository struct {
-	db *sql.DB
+	db *pgxpool.Pool
 }
 
 var (
@@ -17,7 +19,7 @@ var (
 )
 
 func NewAccountDBRepository() *AccountDBRepository {
-	db, _ := postgres.GetConnection()
+  db := postgres.NewDatabaseInstance.Pool
 
 	if NewAccountDBRepositoryInstance == nil {
 		NewAccountDBRepositoryInstance = &AccountDBRepository{
@@ -32,11 +34,12 @@ func (r *AccountDBRepository) GetByID(id int) (*domain.Account, error) {
 	var account domain.Account
 
 	err := r.db.QueryRow(
+    context.Background(),
 		queries.GetAccountByID,
 		id,
 	).Scan(&account.ID, &account.Limit, &account.Balance)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return &domain.Account{}, domain.ErrAccountNotFound
 		}
 
@@ -49,7 +52,7 @@ func (r *AccountDBRepository) GetByID(id int) (*domain.Account, error) {
 func (r *AccountDBRepository) GetLastTransactions(accountId int) ([]*domain.LastTransaction, error) {
 	transactions := make([]*domain.LastTransaction, 0)
 
-	rows, err := r.db.Query(queries.GetLastTransactions, accountId)
+	rows, err := r.db.Query(context.Background(), queries.GetLastTransactions, accountId)
 	if err != nil {
 		return transactions, err
 	}
@@ -66,18 +69,4 @@ func (r *AccountDBRepository) GetLastTransactions(accountId int) ([]*domain.Last
 	}
 
 	return transactions, nil
-}
-
-func (r *AccountDBRepository) Update(account *domain.Account) error {
-	_, err := r.db.Exec(
-		queries.UpdateAccount,
-		account.Limit,
-		account.Balance,
-		account.ID,
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

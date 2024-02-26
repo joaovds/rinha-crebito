@@ -8,16 +8,28 @@ import (
 )
 
 var (
-	accountUsecase *usecases.AccountUsecase
-	Once           sync.Once
+	accountUsecase     *usecases.AccountUsecase
+	transactionUsecase *usecases.TransactionUsecase
+	OnceAUC            sync.Once
+	OnceTUC            sync.Once
 )
 
 func NewAccountUsecases() *usecases.AccountUsecase {
-	Once.Do(func() {
+	OnceAUC.Do(func() {
 		repo := repositories.NewAccountDBRepository()
 
 		accountUsecase = usecases.NewAccountUsecase(repo)
 	})
 
 	return accountUsecase
+}
+
+func NewTransactionUsecases() *usecases.TransactionUsecase {
+	OnceTUC.Do(func() {
+		repo := repositories.NewTransactionDBRepository()
+
+		transactionUsecase = usecases.NewTransactionUsecase(repo)
+	})
+
+	return transactionUsecase
 }
