@@ -13,7 +13,6 @@ func init() {
 
 func main() {
 	db, _ := database.SetupDatabase()
-	println(db)
 	defer db.Close()
 
 	mux := http.NewServeMux()

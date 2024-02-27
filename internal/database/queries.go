@@ -1,11 +1,11 @@
 package database
 
 const (
-	GetAllAccounts       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
-	GetAccountByID       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
-	UpdateAccountBalance = "UPDATE accounts SET balance = $1 WHERE id = $2"
+	GetAllClientsQuery       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
+	GetClientByIDQuery       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
+	UpdateClientBalanceQuery = "UPDATE accounts SET balance = $1 WHERE id = $2"
 
-	GetLastTransactions = `
+	GetLastTransactionsQuery = `
   SELECT
     value,
     type_transaction,
@@ -21,5 +21,5 @@ const (
     realized_at DESC
   LIMIT 10
   `
-	InsertTransaction = "INSERT INTO transactions (value, type_transaction, description, realized_at, account_id) VALUES ($1, $2, $3, $4, $5)"
+	InsertTransactionQuery = "INSERT INTO transactions (value, type_transaction, description, realized_at, account_id) VALUES ($1, $2, $3, $4, $5)"
 )
