@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joaovds/rinha-crebito/internal/database"
 	"github.com/joaovds/rinha-crebito/internal/handlers"
@@ -16,10 +18,17 @@ func main() {
 
 	mux.HandleFunc("/clientes/{id}/transacoes", handlers.CreateTransaction)
 
-	mux.HandleFunc("/clientes/{id}/extrato", handlers.GetClientExtract)
+  mux.HandleFunc("/clientes/{id}/extrato", handlers.GetClientExtract)
 
-	log.Println("Starting server on http://localhost:9999")
-	log.Fatal(http.ListenAndServe(":9999", mux))
+  APIPORT := os.Getenv("PORT")
+  if APIPORT == "" {
+    APIPORT = "9999"
+  }
+
+  println(APIPORT)
+
+  log.Println(fmt.Sprintf("Starting server on http://localhost:%s", APIPORT))
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", APIPORT), mux))
 }
 
 func startDatabase() {

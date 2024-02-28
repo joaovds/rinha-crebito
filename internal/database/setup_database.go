@@ -11,7 +11,7 @@ import (
 var Db *pgxpool.Pool
 
 func SetupDatabase() (*pgxpool.Pool, error) {
-	dbPool, err := pgxpool.New(context.Background(), "postgres://root:root@localhost:5432/rinha")
+	dbPool, err := pgxpool.New(context.Background(), "db://root:root@localhost:5432/rinha")
 	if err != nil {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 		os.Exit(1)
