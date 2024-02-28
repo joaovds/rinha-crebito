@@ -1,6 +1,13 @@
 package dtos
 
-import "time"
+import (
+	"errors"
+	"time"
+)
+
+var (
+	ErrIncosistentBalance = errors.New("inconsistent balance")
+)
 
 type Client struct {
 	ID      int
@@ -16,27 +23,42 @@ func NewClient(id, limit, balance int) *Client {
 	}
 }
 
-type Transaction struct {
-	ID              int
-	Value           int
-	TypeTransaction string
-	Description     string
-	AccountID       int
-	RealizedAt      time.Time
+type CreateTransactionRequest struct {
+	Value           int    `json:"valor"`
+	TypeTransaction string `json:"tipo"`
+	Description     string `json:"descricao"`
+	ClientID        int
 }
 
-func NewTransaction(id, value int, typeTransaction, description string, accountID int) *Transaction {
-	return &Transaction{
-		ID:              id,
+func NewCreateTransactionRequest(id, value int, typeTransaction, description string, clientID int) *CreateTransactionRequest {
+	return &CreateTransactionRequest{
 		Value:           value,
 		TypeTransaction: typeTransaction,
 		Description:     description,
-		AccountID:       accountID,
-		RealizedAt:      time.Now(),
+		ClientID:        clientID,
 	}
 }
 
-type ExtractDTO struct {
+func (ctr *CreateTransactionRequest) IsValid() error {
+	if ctr.Value <= 0 {
+		return ErrIncosistentBalance
+	}
+	if ctr.TypeTransaction != "d" && ctr.TypeTransaction != "c" {
+		return ErrIncosistentBalance
+	}
+	if ctr.Description == "" || len(ctr.Description) > 10 {
+		return ErrIncosistentBalance
+	}
+
+	return nil
+}
+
+type NewTransactionResponse struct {
+	Limit   int `json:"limite"`
+	Balance int `json:"saldo"`
+}
+
+type ExtractResponse struct {
 	Balance          Balance            `json:"saldo"`
 	LastTransactions []*LastTransaction `json:"ultimas_transacoes"`
 }

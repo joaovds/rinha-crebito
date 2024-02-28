@@ -1,9 +1,10 @@
 package database
 
 const (
-	GetAllClientsQuery       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
-	GetClientByIDQuery       = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
-	UpdateClientBalanceQuery = "UPDATE accounts SET balance = $1 WHERE id = $2"
+	GetAllClientsQuery          = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
+	GetClientByIDQuery          = "SELECT id, \"limit\", balance from accounts WHERE id = $1"
+	GetClientByIDForUpdateQuery = "SELECT id, \"limit\", balance from accounts WHERE id = $1 FOR UPDATE"
+	UpdateClientBalanceQuery    = "UPDATE accounts SET balance = $1 WHERE id = $2"
 
 	GetLastTransactionsQuery = `
   SELECT
