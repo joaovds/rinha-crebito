@@ -11,12 +11,12 @@ import (
 var Db *pgxpool.Pool
 
 func SetupDatabase() (*pgxpool.Pool, error) {
-  dbConfig, err := pgxpool.ParseConfig("postgres://root:root@127.0.0.1:5432/rinha")
-  if err != nil {
-    log.Fatalf("Unable to parse database config: %v\n", err)
-  }
-  dbConfig.MaxConns = 100
-  dbConfig.MinConns = 10
+	dbConfig, err := pgxpool.ParseConfig("postgres://root:root@127.0.0.1:5432/rinha")
+	if err != nil {
+		log.Fatalf("Unable to parse database config: %v\n", err)
+	}
+	dbConfig.MaxConns = 100
+	dbConfig.MinConns = 10
 
 	dbPool, err := pgxpool.NewWithConfig(context.Background(), dbConfig)
 	if err != nil {
