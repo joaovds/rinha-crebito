@@ -18,8 +18,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.7"
-          memory: "180MB"
+          cpus: "0.9"
+          memory: "220MB"
 
   api01: &api
     # image: joaovds07/rinha-crebito:latest
@@ -36,8 +36,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.3"
-          memory: "155MB"
+          cpus: "0.2"
+          memory: "125MB"
 
   api02:
     <<: *api
@@ -64,4 +64,4 @@ services:
       resources:
         limits:
           cpus: "0.2"
-          memory: "60MB"
+          memory: "80MB"
