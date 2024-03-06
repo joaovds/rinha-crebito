@@ -1,0 +1,16 @@
+FROM golang:1.22-alpine as builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN go clean --modcache
+RUN GOOS=linux go build -ldflags="-w -s" -o main ./cmd/loadbalancer/main.go
+
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /app/main .
+
+CMD [ "./main" ]
