@@ -11,11 +11,6 @@ import (
 )
 
 func GetClientExtract(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
 	if r.PathValue("id") == "" {
 		w.WriteHeader(http.StatusNotFound)
 		return
@@ -51,10 +46,6 @@ func GetClientExtract(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateTransaction(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
 	if r.PathValue("id") == "" {
 		w.WriteHeader(http.StatusNotFound)
 		return

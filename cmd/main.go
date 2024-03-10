@@ -16,9 +16,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/clientes/{id}/transacoes", handlers.CreateTransaction)
+	mux.HandleFunc("POST /clientes/{id}/transacoes", handlers.CreateTransaction)
 
-	mux.HandleFunc("/clientes/{id}/extrato", handlers.GetClientExtract)
+	mux.HandleFunc("GET /clientes/{id}/extrato", handlers.GetClientExtract)
 
 	APIPORT := os.Getenv("PORT")
 	if APIPORT == "" {
