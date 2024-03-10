@@ -15,7 +15,7 @@ func SetupDatabase() (*pgxpool.Pool, error) {
 	if err != nil {
 		log.Fatalf("Unable to parse database config: %v\n", err)
 	}
-	dbConfig.MaxConns = 80
+	dbConfig.MaxConns = 16
 	dbConfig.MinConns = 10
 
 	dbPool, err := pgxpool.NewWithConfig(context.Background(), dbConfig)
