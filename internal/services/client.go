@@ -1,7 +1,6 @@
 package services
 
 import (
-	"context"
 	"time"
 
 	"github.com/joaovds/rinha-crebito/internal/database"
@@ -45,50 +44,13 @@ func (c *ClientService) CreateNewTransaction(transaction dtos.CreateTransactionR
 		return nil, isValidErr
 	}
 
-	tx, err := c.Crepo.NewDBTransaction()
-	if err != nil {
-		return nil, err
-	}
-	defer tx.Rollback(context.Background())
-
-	client, err := c.Crepo.GetClientByIDForUpdate(tx, transaction.ClientID)
-	if err != nil {
-		return nil, err
-	}
-
-	var newBalance int
-
-	if transaction.TypeTransaction == "d" {
-		newBalance = client.Balance - transaction.Value
-
-		if newBalance < -client.Limit {
-			return nil, dtos.ErrIncosistentBalance
-		}
-	}
-
-	if transaction.TypeTransaction == "c" {
-		newBalance = client.Balance + transaction.Value
-	}
-
-	client.Balance = newBalance
-
-	err = c.Crepo.InsertTransaction(tx, &transaction)
-	if err != nil {
-		return nil, err
-	}
-
-	err = c.Crepo.UpdateClientBalance(tx, client)
-	if err != nil {
-		return nil, err
-	}
-
-	err = tx.Commit(context.Background())
+	result, err := c.Crepo.InsertTransaction(&transaction)
 	if err != nil {
 		return nil, err
 	}
 
 	return &dtos.NewTransactionResponse{
-		Balance: newBalance,
-		Limit:   client.Limit,
+		Balance: result.Balance,
+		Limit:   result.Limit,
 	}, nil
 }

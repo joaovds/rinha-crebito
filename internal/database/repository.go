@@ -2,9 +2,9 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"log"
-	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/joaovds/rinha-crebito/internal/dtos"
@@ -20,14 +20,16 @@ func NewRepository() *Repository {
 	return &Repository{}
 }
 
-func (r *Repository) NewDBTransaction() (pgx.Tx, error) {
-	tx, err := Db.Begin(context.Background())
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
+type InsertTransactionResponse struct {
+	Limit   int `json:"limite"`
+	Balance int `json:"saldo"`
+}
 
-	return tx, nil
+func NewInsertTransactionResponse(limit, balance int) *InsertTransactionResponse {
+	return &InsertTransactionResponse{
+		Limit:   limit,
+		Balance: balance,
+	}
 }
 
 func (r *Repository) GetClientByID(id int) (*dtos.Client, error) {
@@ -51,56 +53,28 @@ func (r *Repository) GetClientByID(id int) (*dtos.Client, error) {
 	return &client, nil
 }
 
-func (r *Repository) GetClientByIDForUpdate(tx pgx.Tx, id int) (*dtos.Client, error) {
-	var client dtos.Client
+func (r *Repository) InsertTransaction(transaction *dtos.CreateTransactionRequest) (*InsertTransactionResponse, error) {
+	var insertResponseJSON string
 
-	err := tx.QueryRow(
-		context.Background(),
-		GetClientByIDForUpdateQuery,
-		id,
-	).Scan(&client.ID, &client.Limit, &client.Balance)
-	if err != nil {
-		log.Println(err)
-
-		if err == pgx.ErrNoRows {
-			return &dtos.Client{}, ErrClientNotFound
-		}
-
-		return &dtos.Client{}, err
-	}
-
-	return &client, nil
-}
-
-func (r *Repository) UpdateClientBalance(tx pgx.Tx, client *dtos.Client) error {
-	_, err := tx.Exec(
-		context.Background(),
-		UpdateClientBalanceQuery,
-		client.Balance,
-		client.ID,
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (r *Repository) InsertTransaction(tx pgx.Tx, transaction *dtos.CreateTransactionRequest) error {
-	_, err := tx.Exec(
+	err := Db.QueryRow(
 		context.Background(),
 		InsertTransactionQuery,
 		transaction.Value,
 		transaction.TypeTransaction,
 		transaction.Description,
-		time.Now(),
 		transaction.ClientID,
-	)
+	).Scan(&insertResponseJSON)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	var insertResponse InsertTransactionResponse
+	err = json.Unmarshal([]byte(insertResponseJSON), &insertResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &insertResponse, nil
 }
 
 func (r *Repository) GetLastTransactions(clientId int) ([]*dtos.LastTransaction, error) {
